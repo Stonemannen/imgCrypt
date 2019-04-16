@@ -24,7 +24,7 @@ Jimp.read(options.image)
     // Do stuff with the image.
     var hidden = ""
     for(var i = 0; i < readOrder.length; i++){
-        hidden += String.fromCharCode((Jimp.intToRGBA(image.getPixelColor(readOrder[i].x, readOrder[i].y)).r + Jimp.intToRGBA(image.getPixelColor(readOrder[i].x, readOrder[i].y)).g + Jimp.intToRGBA(image.getPixelColor(readOrder[i].x, readOrder[i].y)).g - (readOrder[i].caesar * 3))/3)
+        hidden += String.fromCharCode(Jimp.intToRGBA(image.getPixelColor(readOrder[i].x, readOrder[i].y)).r - readOrder[i].caesar)
     }
     console.log(hidden)
   })

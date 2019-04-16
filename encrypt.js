@@ -29,8 +29,6 @@ const options = commandLineArgs(optionDefinitions)
 
 var readOrder = []
 
-console.log(options)
-
 Jimp.read(options.image)
   .then(image => {
     // Do stuff with the image.
@@ -38,7 +36,8 @@ Jimp.read(options.image)
       var x = getRandomArbitrary(0, image.bitmap.width)
       var y = getRandomArbitrary(0, image.bitmap.height)
       var caesar = getRandomArbitrary(0, 100);
-      image.setPixelColor(Jimp.rgbaToInt(Number(options.message[i].charCodeAt(0)) + caesar, Number(options.message[i].charCodeAt(0)) + caesar, Number(options.message[i].charCodeAt(0)) + caesar, 100), x, y)
+      var originalColor = Jimp.intToRGBA(image.getPixelColor(x, y))
+      image.setPixelColor(Jimp.rgbaToInt(Number(options.message[i].charCodeAt(0)) + caesar, originalColor.g, originalColor.b, originalColor.a), x, y)
       readOrder.push({
         x: x,
         y: y,
