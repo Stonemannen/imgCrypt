@@ -21,7 +21,6 @@ var readOrder = JSON.parse(fs.readFileSync(options.key, "utf8"))
 
 Jimp.read(options.image)
   .then(image => {
-    // Do stuff with the image.
     var hidden = ""
     for(var i = 0; i < readOrder.length; i++){
         hidden += String.fromCharCode(Jimp.intToRGBA(image.getPixelColor(readOrder[i].x, readOrder[i].y)).r - readOrder[i].caesar)

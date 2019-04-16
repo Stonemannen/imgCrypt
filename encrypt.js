@@ -27,18 +27,21 @@ const optionDefinitions = [{
 const commandLineArgs = require('command-line-args')
 const options = commandLineArgs(optionDefinitions)
 
+//in which order to read the hidden message
 var readOrder = []
 
 Jimp.read(options.image)
   .then(image => {
-    // Do stuff with the image.
+    // Loop over all chars in message and manipulate pixels
     for (var i = 0; i < options.message.length; i++) {
       var x = getRandomArbitrary(0, image.bitmap.width)
       var y = getRandomArbitrary(0, image.bitmap.height)
-      var caesar = getRandomArbitrary(0, 100);
       var originalColor = Jimp.intToRGBA(image.getPixelColor(x, y))
+      //make pixel not stand out if original pixel is missing red
       if(originalColor.r < 70){
-        caesar = getRandomArbitrary(-10, 10);
+        var caesar = getRandomArbitrary(-10, 10);
+      }else {
+        var caesar = getRandomArbitrary(0, 100);
       }
       image.setPixelColor(Jimp.rgbaToInt(Number(options.message[i].charCodeAt(0)) + caesar, originalColor.g, originalColor.b, originalColor.a), x, y)
       readOrder.push({
@@ -55,6 +58,7 @@ Jimp.read(options.image)
     }
     
   }).then(() => {
+    //save readOrder to file
     if (options.key != undefined) {
       fs.writeFileSync(options.key, JSON.stringify(readOrder), 'utf-8')
     } else {
