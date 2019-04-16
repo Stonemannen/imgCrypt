@@ -1,11 +1,25 @@
 var Jimp = require('jimp');
 var fs = require('fs')
 
-var args = process.argv.slice(2);
+const optionDefinitions = [{
+  name: 'image',
+  alias: 'i',
+  type: String,
+  defaultOption: true
+},
+{
+  name: 'key',
+  alias: 'k',
+  type: String
+}
+]
 
-var readOrder = JSON.parse(fs.readFileSync(args[1], "utf8"))
+const commandLineArgs = require('command-line-args')
+const options = commandLineArgs(optionDefinitions)
 
-Jimp.read(args[0])
+var readOrder = JSON.parse(fs.readFileSync(options.key, "utf8"))
+
+Jimp.read(options.image)
   .then(image => {
     // Do stuff with the image.
     var hidden = ""

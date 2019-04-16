@@ -1,24 +1,63 @@
 var Jimp = require('jimp');
 var fs = require('fs')
 
-var args = process.argv.slice(2);
+const optionDefinitions = [{
+    name: 'image',
+    alias: 'i',
+    type: String,
+    defaultOption: true
+  },
+  {
+    name: 'message',
+    alias: 'm',
+    type: String
+  },
+  {
+    name: 'key',
+    alias: 'k',
+    type: String
+  },
+  {
+    name: 'output',
+    alias: 'o',
+    type: String
+  }
+]
+
+const commandLineArgs = require('command-line-args')
+const options = commandLineArgs(optionDefinitions)
 
 var readOrder = []
 
-Jimp.read(args[0])
+console.log(options)
+
+Jimp.read(options.image)
   .then(image => {
     // Do stuff with the image.
-    for(var i = 0; i < args[1].length; i++){
+    for (var i = 0; i < options.message.length; i++) {
       var x = getRandomArbitrary(0, image.bitmap.width)
       var y = getRandomArbitrary(0, image.bitmap.height)
       var caesar = getRandomArbitrary(0, 100);
-      image.setPixelColor(Jimp.rgbaToInt(Number(args[1][i].charCodeAt(0))+caesar, Number(args[1][i].charCodeAt(0))+caesar, Number(args[1][i].charCodeAt(0))+caesar, 100), x, y)
-      readOrder.push({x: x, y: y, caesar: caesar})
+      image.setPixelColor(Jimp.rgbaToInt(Number(options.message[i].charCodeAt(0)) + caesar, Number(options.message[i].charCodeAt(0)) + caesar, Number(options.message[i].charCodeAt(0)) + caesar, 100), x, y)
+      readOrder.push({
+        x: x,
+        y: y,
+        caesar: caesar
+      })
     }
     image.quality(100);
-    image.write('lena-small-bw.png');
+    if (options.output != undefined) {
+      image.write(options.output);
+    } else {
+      image.write('image.png');
+    }
+    
   }).then(() => {
-    fs.writeFileSync('key.key', JSON.stringify(readOrder), 'utf-8')
+    if (options.key != undefined) {
+      fs.writeFileSync(options.key, JSON.stringify(readOrder), 'utf-8')
+    } else {
+      fs.writeFileSync('hidden.key', JSON.stringify(readOrder), 'utf-8')
+    }
   })
   .catch(err => {
     // Handle an exception.
