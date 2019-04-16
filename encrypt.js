@@ -37,6 +37,9 @@ Jimp.read(options.image)
       var y = getRandomArbitrary(0, image.bitmap.height)
       var caesar = getRandomArbitrary(0, 100);
       var originalColor = Jimp.intToRGBA(image.getPixelColor(x, y))
+      if(originalColor.r < 70){
+        caesar = getRandomArbitrary(-10, 10);
+      }
       image.setPixelColor(Jimp.rgbaToInt(Number(options.message[i].charCodeAt(0)) + caesar, originalColor.g, originalColor.b, originalColor.a), x, y)
       readOrder.push({
         x: x,
